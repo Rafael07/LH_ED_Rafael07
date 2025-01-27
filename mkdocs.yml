@@ -1,0 +1,29 @@
+site_name: LH_ED_Rafael07 - Data Engineering Challenge
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+
+nav:
+  - Home: index.md
+  - Projeto:
+    - Visão Geral: project/overview.md
+    - Arquitetura: project/architecture.md
+    - Estrutura: project/structure.md
+  - Desenvolvimento:
+    - Setup: development/setup.md
+    - Pipeline: development/pipeline.md
+    - DAGs: development/dags.md
+  - Operação:
+    - Deploy: operations/deployment.md
+    - Monitoramento: operations/monitoring.md
+
+plugins:
+  - search
