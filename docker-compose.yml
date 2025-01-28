@@ -1,14 +1,80 @@
 version: '3'
 
 services:
-  db:
+  # Banco de dados Northwind (docker-compose original)
+  source_db:
     image: postgres:12
     environment:
-      POSTGRES_DB: northwind
-      POSTGRES_USER: northwind_user
-      POSTGRES_PASSWORD: thewindisblowing
+        POSTGRES_DB: northwind
+        POSTGRES_USER: northwind_user
+        POSTGRES_PASSWORD: thewindisblowing
     volumes:
-      - ./dbdata:/var/lib/postgresql/data
-      - ./data/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
+      - ./data/raw/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "northwind_user"]
+      interval: 5s
+      retries: 3
+
+  # Banco de dados destino 
+  target_db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: northwind_target
+      POSTGRES_USER: target_user
+      POSTGRES_PASSWORD: thewindkeepsblowing
+    ports:
+      - 5433:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "target_user"]
+      interval: 5s
+      retries: 3
+
+  # Airflow - Interface web
+  airflow-webserver:
+    image: apache/airflow:2.7.1
+    depends_on:
+      - airflow-init
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor 
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./data:/data
+    ports:
+      - 8080:8080
+
+  # Airflow - Monitora e executa as DAGs de acordo com a programação
+  airflow-scheduler:
+    image: apache/airflow:2.7.1
+    depends_on:
+      - airflow-init
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor 
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./data:/data
+    
+  # Airflow - banco de dados
+  airflow-db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+  
+  # Airflow - Serviço de inicialização
+  airflow-init:
+    image: apache/airflow:2.7.1
+    depends_on:
+      - airflow-db
+    environment:
+      - _AIRFLOW_DB_UPGRADE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=airflow
+      - _AIRFLOW_WWW_USER_PASSWORD=airflow
+    command: version
+      
