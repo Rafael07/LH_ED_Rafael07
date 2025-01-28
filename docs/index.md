@@ -1,17 +1,17 @@
-# Welcome to MkDocs
+# Indicium Tech Challenge
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## Sobre o Projeto
+Pipeline de dados para processamento do banco Northwind.
 
-## Commands
+## Objetivos
+- Extrair dados de PostgreSQL e CSV
+- Processar e armazenar em sistema de arquivos
+- Carregar dados processados em banco destino
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Quick Start
+```bash
+# Clone o repositório
+git clone [URL_DO_REPOSITORIO]
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+# Setup do ambiente
+docker-compose up -d
