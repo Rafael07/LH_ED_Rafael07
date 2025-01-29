@@ -1,9 +1,8 @@
-version: '3'
-
 services:
   # Banco de dados Northwind (docker-compose original)
   source_db:
     image: postgres:12
+    restart: always
     environment:
         POSTGRES_DB: northwind
         POSTGRES_USER: northwind_user
