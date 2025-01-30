@@ -8,7 +8,7 @@ services:
         POSTGRES_USER: northwind_user
         POSTGRES_PASSWORD: thewindisblowing
     volumes:
-      - ./data/bronze/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
+      - ./data/origin/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
     ports:
       - 5432:5432
     healthcheck:
@@ -31,6 +31,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  meltano:
+      image: meltano/meltano:latest
+      volumes:
+        - ./:/project
+        - ./data:/data
+      environment:
+        - MELTANO_PROJECT_ROOT=/project
+      ports:
+        - "5000:5000"
 
   # Airflow - Interface web
   airflow-webserver:

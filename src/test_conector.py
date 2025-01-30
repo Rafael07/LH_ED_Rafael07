@@ -7,8 +7,9 @@ conn = psycopg.connect(
         password="thewindisblowing",
         port=5432
     )
+
 conn.autocommit = True
 
 cursor = conn.cursor()
-cursor.execute("SELECT * FROM categories LIMIT 1;")        
+cursor.execute("SELECT * FROM products LIMIT 1;")        
 print(cursor.fetchall())

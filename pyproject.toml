@@ -13,6 +13,7 @@ dependencies = [
     "python-dotenv (>=1.0.1,<2.0.0)",
     "apache-airflow (>=2.10.4,<3.0.0)",
     "psycopg[binary] (>=3.2.4)",
+    "pyarrow (==11.0.0)",
 ]
 
 
@@ -24,4 +25,3 @@ build-backend = "poetry.core.masonry.api"
 pytest = "^8.3.4"
 flake8 = "^7.1.1"
 mkdocs-material = "^9.5.50"
-

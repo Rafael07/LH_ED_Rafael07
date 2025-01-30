@@ -1,29 +1,26 @@
 site_name: LH_ED_Rafael07 - Data Engineering Challenge
+site_description: Code challenge for Software Developer with focus in data projects - Indicium
 theme:
   name: material
   features:
     - navigation.tabs
     - navigation.sections
-    - navigation.top
-    - search.highlight
-  palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
 
 nav:
   - Home: index.md
-  - Projeto:
-    - Visão Geral: project/overview.md
-    - Arquitetura: project/architecture.md
-    - Estrutura: project/structure.md
-  - Desenvolvimento:
-    - Setup: development/setup.md
-    - Pipeline: development/pipeline.md
-    - DAGs: development/dags.md
+  - Arquitetura:
+    - Visão Geral: architecture/overview.md
+    - Fluxo de Dados: architecture/data_flow.md
+    - Tecnologias: architecture/technologies.md
+  - Implementação:
+    - Step 1 - Extração: implementation/step1_extraction.md
+    - Step 2 - Carregamento: implementation/step2_loading.md
+    - DAGs Airflow: implementation/airflow_dags.md
+  - Setup:
+    - Requisitos: setup/requirements.md
+    - Instalação: setup/installation.md
+    - Configuração: setup/configuration.md
   - Operação:
-    - Deploy: operations/deployment.md
+    - Execução: operations/execution.md
     - Monitoramento: operations/monitoring.md
-
-plugins:
-  - search
+    - Troubleshooting: operations/troubleshooting.md
