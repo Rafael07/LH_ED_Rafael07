@@ -1,0 +1,119 @@
+version: 1
+default_environment: dev
+project_id: f1fcd959-d08c-4235-a04e-f57427c98c39
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-local
+    inherit_from: tap-csv
+    path: $DATA_PATH/data/bronze/
+  - name: tap-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+    config:
+      config:
+      files:
+      - entity: order_details
+        file: order_details.csv
+        keys:
+        - order_id
+        - product_id
+        - unit_price
+        - quantity
+        - discount
+        path: $DATA_PATH/data/origin
+  - name: tap-csv-bronze
+    inherit_from: tap-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+    config:
+      files:
+        - entity: order_details
+          path: $DATA_PATH/data/bronze/csv/2025-02-02/order_details.csv
+          keys: 
+            - order_id
+            - product_id
+        - entity: categories
+          path: $DATA_PATH/data/bronze/postgres/public-categories/2025-02-02/public-categories.csv
+          keys: 
+            - category_id
+        - entity: customers
+          path: $DATA_PATH/data/bronze/postgres/public-customers/2025-02-02/public-customers.csv
+          keys: 
+            - customer_id
+        - entity: employee_territories
+          path: $DATA_PATH/data/bronze/postgres/public-employee_territories/2025-02-02/public-employee_territories.csv
+          keys: 
+            - employee_id
+            - territory_id
+        - entity: employees
+          path: $DATA_PATH/data/bronze/postgres/public-employees/2025-02-02/public-employees.csv
+          keys: 
+            - employee_id
+        - entity: orders
+          path: $DATA_PATH/data/bronze/postgres/public-orders/2025-02-02/public-orders.csv
+          keys: 
+            - order_id
+        - entity: products
+          path: $DATA_PATH/data/bronze/postgres/public-products/2025-02-02/public-products.csv
+          keys: 
+            - product_id
+        - entity: region
+          path: $DATA_PATH/data/bronze/postgres/public-region/2025-02-02/public-region.csv
+          keys: 
+            - region_id
+        - entity: shippers
+          path: $DATA_PATH/data/bronze/postgres/public-shippers/2025-02-02/public-shippers.csv
+          keys: 
+            - shipper_id
+        - entity: suppliers
+          path: $DATA_PATH/data/bronze/postgres/public-suppliers/2025-02-02/public-suppliers.csv
+          keys: 
+            - supplier_id
+        - entity: territories
+          path: $DATA_PATH/data/bronze/postgres/public-territories/2025-02-02/public-territories.csv
+          keys: 
+            - territory_id
+        - entity: us_states
+          path: $DATA_PATH/data/bronze/postgres/public-us_states/2025-02-02/public-us_states.csv
+          keys: 
+            - state_id
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+    config:
+      sqlalchemy_url: postgresql://northwind_user:thewindisblowing@localhost:5432/northwind
+    select:
+    - public-*.*
+
+  loaders:
+  - name: target-csv-postgres
+    inherit_from: target-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-csv.git
+    config:
+      output_path: $DATA_PATH/data/bronze/
+      file_naming_scheme: postgres/{stream_name}/{datestamp}/{stream_name}.csv
+      file_format: csv
+  - name: target-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-csv.git
+    config:
+      output_path: $DATA_PATH/data/bronze/csv/$EXECUTION_DATE
+      file_format: csv
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-target-postgres
+    config:
+      host: localhost
+      database: northwind_target
+      user: target_user
+      password: thewindkeepsblowing
+      sqlalchemy_url: postgresql://target_user:thewindkeepsblowing@localhost:5433/northwind_target
+      default_target_schema: public
+      activate_version: false
+      add_record_metadata: false
+    

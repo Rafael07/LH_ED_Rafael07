@@ -570,12 +570,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "meltano" },
     { name = "pandas" },
+    { name = "pyyaml" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "meltano", specifier = ">=3.6.0" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
 ]
 
 [[package]]
