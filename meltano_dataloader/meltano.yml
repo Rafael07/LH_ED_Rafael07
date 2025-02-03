@@ -7,23 +7,16 @@ environments:
 - name: prod
 plugins:
   extractors:
-  - name: tap-local
-    inherit_from: tap-csv
-    path: $DATA_PATH/data/bronze/
   - name: tap-csv
     variant: meltanolabs
     pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
     config:
-      config:
       files:
       - entity: order_details
         file: order_details.csv
         keys:
         - order_id
         - product_id
-        - unit_price
-        - quantity
-        - discount
         path: $DATA_PATH/data/origin
   - name: tap-csv-bronze
     inherit_from: tap-csv
@@ -31,56 +24,59 @@ plugins:
     pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
     config:
       files:
-        - entity: order_details
-          path: $DATA_PATH/data/bronze/csv/2025-02-02/order_details.csv
-          keys: 
-            - order_id
-            - product_id
-        - entity: categories
-          path: $DATA_PATH/data/bronze/postgres/public-categories/2025-02-02/public-categories.csv
-          keys: 
-            - category_id
-        - entity: customers
-          path: $DATA_PATH/data/bronze/postgres/public-customers/2025-02-02/public-customers.csv
-          keys: 
-            - customer_id
-        - entity: employee_territories
-          path: $DATA_PATH/data/bronze/postgres/public-employee_territories/2025-02-02/public-employee_territories.csv
-          keys: 
-            - employee_id
-            - territory_id
-        - entity: employees
-          path: $DATA_PATH/data/bronze/postgres/public-employees/2025-02-02/public-employees.csv
-          keys: 
-            - employee_id
-        - entity: orders
-          path: $DATA_PATH/data/bronze/postgres/public-orders/2025-02-02/public-orders.csv
-          keys: 
-            - order_id
-        - entity: products
-          path: $DATA_PATH/data/bronze/postgres/public-products/2025-02-02/public-products.csv
-          keys: 
-            - product_id
-        - entity: region
-          path: $DATA_PATH/data/bronze/postgres/public-region/2025-02-02/public-region.csv
-          keys: 
-            - region_id
-        - entity: shippers
-          path: $DATA_PATH/data/bronze/postgres/public-shippers/2025-02-02/public-shippers.csv
-          keys: 
-            - shipper_id
-        - entity: suppliers
-          path: $DATA_PATH/data/bronze/postgres/public-suppliers/2025-02-02/public-suppliers.csv
-          keys: 
-            - supplier_id
-        - entity: territories
-          path: $DATA_PATH/data/bronze/postgres/public-territories/2025-02-02/public-territories.csv
-          keys: 
-            - territory_id
-        - entity: us_states
-          path: $DATA_PATH/data/bronze/postgres/public-us_states/2025-02-02/public-us_states.csv
-          keys: 
-            - state_id
+      - entity: order_details
+        path: $DATA_PATH/data/bronze/csv/$LAST_DATE/order_details.csv
+        keys:
+        - order_id
+        - product_id
+      - entity: categories
+        path: 
+          $DATA_PATH/data/bronze/postgres/public-categories/$LAST_DATE/public-categories.csv
+        keys:
+        - category_id
+      - entity: customers
+        path: $DATA_PATH/data/bronze/postgres/public-customers/$LAST_DATE/public-customers.csv
+        keys:
+        - customer_id
+      - entity: employee_territories
+        path: 
+          $DATA_PATH/data/bronze/postgres/public-employee_territories/$LAST_DATE/public-employee_territories.csv
+        keys:
+        - employee_id
+        - territory_id
+      - entity: employees
+        path: $DATA_PATH/data/bronze/postgres/public-employees/$LAST_DATE/public-employees.csv
+        keys:
+        - employee_id
+      - entity: orders
+        path: $DATA_PATH/data/bronze/postgres/public-orders/$LAST_DATE/public-orders.csv
+        keys:
+        - order_id
+      - entity: products
+        path: $DATA_PATH/data/bronze/postgres/public-products/$LAST_DATE/public-products.csv
+        keys:
+        - product_id
+      - entity: region
+        path: $DATA_PATH/data/bronze/postgres/public-region/$LAST_DATE/public-region.csv
+        keys:
+        - region_id
+      - entity: shippers
+        path: $DATA_PATH/data/bronze/postgres/public-shippers/$LAST_DATE/public-shippers.csv
+        keys:
+        - shipper_id
+      - entity: suppliers
+        path: $DATA_PATH/data/bronze/postgres/public-suppliers/$LAST_DATE/public-suppliers.csv
+        keys:
+        - supplier_id
+      - entity: territories
+        path: 
+          $DATA_PATH/data/bronze/postgres/public-territories/$LAST_DATE/public-territories.csv
+        keys:
+        - territory_id
+      - entity: us_states
+        path: $DATA_PATH/data/bronze/postgres/public-us_states/$LAST_DATE/public-us_states.csv
+        keys:
+        - state_id
   - name: tap-postgres
     variant: meltanolabs
     pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
@@ -96,7 +92,7 @@ plugins:
     pip_url: git+https://github.com/MeltanoLabs/target-csv.git
     config:
       output_path: $DATA_PATH/data/bronze/
-      file_naming_scheme: postgres/{stream_name}/{datestamp}/{stream_name}.csv
+      file_naming_scheme: postgres/{stream_name}/$EXECUTION_DATE/{stream_name}.csv
       file_format: csv
   - name: target-csv
     variant: meltanolabs
@@ -116,4 +112,3 @@ plugins:
       default_target_schema: public
       activate_version: false
       add_record_metadata: false
-    
