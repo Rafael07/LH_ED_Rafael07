@@ -1,18 +1,22 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
-
+import pendulum
 import os
 
 DEFAULT_ARGS = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': days_ago(1),
+    'start_date': pendulum.today('UTC').add(years=-1),
     'retries': 1,
 }
 
-root_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07'
+data_path = os.getenv('DATA_PATH')
+
+def print_data_path():
+    print(f"DATA_PATH: {data_path}")
 
 with DAG(
     'step2_load_target_db',
@@ -22,13 +26,23 @@ with DAG(
     catchup=False
 ) as dag2:
     
-    start = DummyOperator(task_id='start')
+    start = EmptyOperator(task_id='start')
+
+    print_path = PythonOperator(
+        task_id='print_data_path',
+        python_callable=print_data_path
+    )
     
     step2_load_target_db = BashOperator(
         task_id='load_target_db',
-        bash_command=f"source /home/rafael/projects/indicium/LH_ED_Rafael07/meltano_dataloader/.venv/bin/activate && python {root_dir}/src/meltano_script.py push"
+        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/meltano_dataloader/set_env.sh && python {data_path}/src/meltano_script.py push"
     )
 
-    end = DummyOperator(task_id='end')
+    run_final_query = BashOperator(
+        task_id='run_final_query',
+        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && python {data_path}/src/final_query.py '{{{{ ds }}}}'"
+    )
+
+    end = EmptyOperator(task_id='end')
     
-    start >> step2_load_target_db >> end
+    start >> print_path >> step2_load_target_db >> run_final_query >> end

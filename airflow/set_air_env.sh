@@ -2,11 +2,11 @@
 # set_all_env.sh - Script para configurar variáveis de ambiente do projeto, incluindo as configurações do Airflow
 
 # Define AIRFLOW_HOME para que o Airflow use o diretório correto
-export AIRFLOW_HOME="/home/rafael/projects/indicium/LH_ED_Rafael07/airflow"
+export AIRFLOW_HOME="/home/rafael/projects/testes/LH_ED_Rafael07/airflow"
 echo "AIRFLOW_HOME configurado para: $AIRFLOW_HOME"
 
 # Define DATA_PATH
-export DATA_PATH="/home/rafael/projects/indicium/LH_ED_Rafael07"
+export DATA_PATH="/home/rafael/projects/testes/LH_ED_Rafael07"
 echo "DATA_PATH configurado para: $DATA_PATH"
 
 # Define EXECUTION_DATE com a data atual no formato AAAA-MM-DD
