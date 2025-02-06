@@ -2,9 +2,10 @@ import os
 import subprocess
 import argparse
 
+root_dir = os.getenv('DATA_PATH')
+
 def run_extraction_csv():
-    root_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07/'
-    meltano_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07/meltano_dataloader'
+    meltano_dir = f"{root_dir}/meltano_dataloader"
     command = ['meltano', 'run', 'tap-csv', 'target-csv']
     result = subprocess.run(command, cwd=meltano_dir, capture_output=True, text=True)
     if result.returncode == 0:
@@ -14,8 +15,7 @@ def run_extraction_csv():
         print(result.stderr)
 
 def run_extraction_postgres():
-    root_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07/'
-    meltano_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07/meltano_dataloader'
+    meltano_dir = f"{root_dir}/meltano_dataloader"
     command = 'source .venv/bin/activate && meltano run tap-postgres target-csv-postgres'
     result = subprocess.run(command, cwd=meltano_dir, shell=True, executable='/bin/bash', capture_output=True, text=True)
     if result.returncode == 0:
@@ -25,9 +25,9 @@ def run_extraction_postgres():
         print(result.stderr)
 
 def load_to_target_db():
-    root_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07'
-    bronze_dir = '/home/rafael/projects/indicium/LH_ED_Rafael07/data/bronze'
-    
+    bronze_dir = f"{root_dir}/data/bronze"
+    meltano_dir = f"{root_dir}/meltano_dataloader"
+
     # Listar arquivos na pasta bronze
     for subdir, _, files in os.walk(bronze_dir):
         for file in files:
@@ -35,8 +35,8 @@ def load_to_target_db():
             print(f"Carregando arquivo: {file_path}")
             
             # Comando para carregar o arquivo no target_db
-            command = f'source .venv/bin/activate && meltano run tap-csv-bronze target-postgres'
-            result = subprocess.run(command, cwd=root_dir, shell=True, executable='/bin/bash', capture_output=True, text=True)
+            command = 'source .venv/bin/activate && meltano run tap-csv-bronze target-postgres'
+            result = subprocess.run(command, cwd=meltano_dir, shell=True, executable='/bin/bash', capture_output=True, text=True)
             
             if result.returncode == 0:
                 print(f"Arquivo {file_path} carregado com sucesso.")

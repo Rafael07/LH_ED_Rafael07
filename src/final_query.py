@@ -1,7 +1,11 @@
+import os
+import sys
 import psycopg
-import csv
+import pandas as pd
+from datetime import datetime
 
-def export_orders_to_csv():
+root_dir = os.getenv('DATA_PATH')
+def export_orders_to_csv(execution_date):
     # Conexão com o banco de dados
     conn = psycopg.connect(
         dbname="northwind_target",
@@ -34,17 +38,18 @@ def export_orders_to_csv():
     
     # Obter os resultados
     rows = cur.fetchall()
+    columns = [desc[0] for desc in cur.description]
+    
+    # Criar DataFrame
+    df = pd.DataFrame(rows, columns=columns)
     
     # Nome do arquivo CSV
-    csv_file = "final_query_orders_details.csv"
+    output_dir = f"{root_dir}/data/gold/{execution_date}"
+    os.makedirs(output_dir, exist_ok=True)
+    csv_file = f"{output_dir}/final_query_orders_details.csv"
     
     # Escrever os resultados no arquivo CSV
-    with open(csv_file, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # Escrever cabeçalhos
-        writer.writerow([desc[0] for desc in cur.description])
-        # Escrever dados
-        writer.writerows(rows)
+    df.to_csv(csv_file, index=False)
     
     # Fechar cursor e conexão
     cur.close()
@@ -53,4 +58,5 @@ def export_orders_to_csv():
     print(f"Dados exportados com sucesso para {csv_file}")
 
 if __name__ == "__main__":
-    export_orders_to_csv()
+    execution_date = sys.argv[1]  # Recebe a data de execução como argumento
+    export_orders_to_csv(execution_date)
