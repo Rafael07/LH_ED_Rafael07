@@ -35,7 +35,7 @@ with DAG(
     
     step2_load_target_db = BashOperator(
         task_id='load_target_db',
-        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/meltano_dataloader/set_env.sh && python {data_path}/src/meltano_script.py push"
+        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/set_env.sh && python {data_path}/src/meltano_script.py push"
     )
 
     run_final_query = BashOperator(

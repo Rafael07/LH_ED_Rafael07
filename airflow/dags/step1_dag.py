@@ -35,12 +35,12 @@ with DAG(
 
     step1_extract_csv = BashOperator(
         task_id='extract_csv',
-        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/airflow/set_air_env.sh && python {data_path}/src/meltano_script.py extract"
+        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/set_env.sh && python {data_path}/src/meltano_script.py extract"
     )
 
     step1_extract_postgres = BashOperator(
         task_id='extract_postgres',
-        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/airflow/set_air_env.sh && python {data_path}/src/meltano_script.py load"
+        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/set_env.sh && python {data_path}/src/meltano_script.py load"
     )
 
     trigger_step2 = TriggerDagRunOperator(
