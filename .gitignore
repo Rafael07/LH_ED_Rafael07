@@ -48,9 +48,13 @@ dbdata/
 
 # MkDocs
 site/
+
 # Data files
-data/bronze/*
 data/silver/*
 data/gold/*
 !data/*/
 !data/**/.gitkeep
+
+# Airflow
+airflow/logs/
+airflow/dags/__pycache__/

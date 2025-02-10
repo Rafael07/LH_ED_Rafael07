@@ -1,8 +1,8 @@
 #!/bin/bash
-# set_all_env.sh - Script para configurar variáveis de ambiente do projeto, incluindo as configurações do Airflow
+# set_env.sh - Script para configurar variáveis de ambiente do projeto, incluindo as configurações do Airflow
 
 # Define DATA_PATH
-DATA_PATH=$(pwd)
+export DATA_PATH=$(dirname $(pwd))
 echo "DATA_PATH configurado para: $DATA_PATH"
 
 # Define AIRFLOW_HOME para que o Airflow use o diretório correto
@@ -13,6 +13,8 @@ echo "AIRFLOW_HOME configurado para: $AIRFLOW_HOME"
 export EXECUTION_DATE=$(date +%Y-%m-%d)
 echo "EXECUTION_DATE configurado para: $EXECUTION_DATE"
 
-# Procura as pastas dentro de $DATA_PATH/data/bronze/csv, ordena e seleciona a última (mais recente)
-export LAST_DATE=$(ls -1 "$DATA_PATH/data/bronze/csv" | sort | tail -n 1)
-echo "LAST_DATE configurado para: $LAST_DATE"
+# Reescreve o arquivo airflow.cfg para as configurações do projeto
+airflow config list --defaults > "${AIRFLOW_HOME}/airflow.cfg"
+
+# Desabilita as DAGs de exemplo do Airflow
+export AIRFLOW__CORE__LOAD_EXAMPLES=false

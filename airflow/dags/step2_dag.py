@@ -33,14 +33,9 @@ with DAG(
         python_callable=print_data_path
     )
     
-    # set_last_date = BashOperator(
-    #     task_id='set_last_date',
-    #     bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/meltano_dataloader/set_last_date.sh"
-    # )
-
     step2_load_target_db = BashOperator(
         task_id='load_target_db',
-        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/meltano_dataloader/set_last_date.sh && python {data_path}/src/meltano_script.py push"
+        bash_command=f"source {data_path}/meltano_dataloader/.venv/bin/activate && source {data_path}/src/set_last_date.sh && python {data_path}/src/meltano_script.py push"
     )
 
     run_final_query = BashOperator(
