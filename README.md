@@ -9,7 +9,6 @@ Desafio técnico do programa Indicium Lighthouse.
 - Airflow
 - Meltano
 - UV
-- MKDocs
 
 ## Objetivo
 
@@ -128,5 +127,5 @@ Utilize o usuário `admin` e a senha gerada. Agora é só checar as DAGs e verif
 
 O projeto foi, sem dúvidas, desafiador. O **Meltano** era uma ferramenta desconhecida e exigiu uma curva de aprendizado para sua configuração. A incompatibilidade entre dependências também foi um obstáculo, pois diferentes partes da stack utilizavam versões distintas do **SQLAlchemy**, gerando conflitos na instalação. A solução foi isolar as ferramentas em ambientes virtuais separados.
 
-O projeto ainda pode ser aprimorado com mais automação, idealmente permitindo sua execução com um único comando. Uma pendência importante é a execução do processo para datas anteriores à atual, um aspecto essencial que será resolvido em futuras atualizações.
+O projeto ainda pode ser aprimorado com mais automação, idealmente permitindo sua execução com um único comando. Uma pendência importante é a execução do processo para datas anteriores à atual, um aspecto essencial que será resolvido em futuras atualizações. A documentação usando MKDocs também está pendente.
 
